@@ -1,0 +1,15 @@
+node_modules
+dist
+dist-electron
+dist-ssr
+coverage
+build
+release
+resources
+src-tauri
+pnpm-lock.yaml
+
+
+
+
+
