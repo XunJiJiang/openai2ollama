@@ -26,7 +26,7 @@ const API_KEY =
   typeof args['api-key'] === 'string' ? args['api-key'] : RANDOM_API_KEY
 
 function checkApiKey(req: Request, res: Response, next: NextFunction) {
-  const apiKey = req.headers['x-api-key'] || req.headers['authorization']
+  const apiKey = req.headers['x-api-key'] ?? req.headers['authorization']
   if (apiKey === `Bearer ${API_KEY}`) {
     next()
   } else {
@@ -105,6 +105,8 @@ if (args.lan) {
 }
 
 console.log(`Using API Key: ${API_KEY}`)
+
+export { app as openai2ollama }
 
 // ollama 接口转发
 // import { createProxyMiddleware } from 'http-proxy-middleware'
