@@ -1,10 +1,11 @@
 import { TOpenAIMessage, TOllamaMessage } from '../types/openai.js'
 
 /** 将 TOpenAIMessage[] 转换为 TOllamaMessage[] */
-export function formatMessages(
+export async function formatMessages(
   messages: TOpenAIMessage[]
-): TOllamaMessage<string>[] {
-  return messages.map((msg) => {
+): Promise<TOllamaMessage<string>[]> {
+  const _messages: TOllamaMessage<string>[] = []
+  for (const msg of messages) {
     const newMsg: TOllamaMessage<string> = {
       role: msg.role,
       content: '',
@@ -14,24 +15,61 @@ export function formatMessages(
       newMsg.content = msg.content
     } else if (Array.isArray(msg.content)) {
       // 处理数组内容，拼接文本，忽略图片等非文本内容
-      msg.content.forEach((c) => {
+      for (const c of msg.content) {
         if ((c.type === 'input_text' || c.type === 'text') && c.text) {
           newMsg.content += c.text + '\n'
         } else if (
           (c.type === 'input_image' || c.type === 'image_url') &&
           c.image_url
         ) {
-          const base64Data = c.image_url.split(',')[1] ?? ''
-          if (base64Data) {
-            newMsg.images?.push(base64Data)
+          if (c.image_url.startsWith('data:image/')) {
+            const base64Data = c.image_url.split(',')[1] ?? ''
+            if (base64Data) {
+              newMsg.images?.push(base64Data)
+            }
+          } else if (c.image_url.startsWith('http')) {
+            // 处理远程图片 URL，下载并转换为 base64
+            const base64Data = await downloadImageAsBase64(c.image_url)
+            if (base64Data) {
+              newMsg.images?.push(base64Data)
+            }
           }
         }
-        // 忽略图片等非文本内容
-        return ''
-      })
+      }
     }
-    return newMsg
-  })
+    _messages.push(newMsg)
+  }
+  return _messages
+}
+
+async function downloadImageAsBase64(
+  url: string,
+  retries: number = 5
+): Promise<string> {
+  try {
+    const response = await fetch(url)
+    if (response.ok) {
+      const buffer = await response.arrayBuffer()
+      const base64Data = Buffer.from(buffer).toString('base64')
+      return base64Data
+    } else {
+      console.warn('[formatMessages] 忽略无法访问的远程图片 URL:', url)
+      return ''
+    }
+  } catch (error) {
+    if (retries > 0) {
+      console.warn(
+        '[formatMessages] 下载远程图片失败，重试中:',
+        url,
+        '剩余重试次数:',
+        retries
+      )
+      return downloadImageAsBase64(url, retries - 1)
+    } else {
+      console.log('[formatMessages] 下载远程图片失败:', url)
+      throw error
+    }
+  }
 }
 
 /** 格式化 messages，隐藏 images 字段的详细内容 */
