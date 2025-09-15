@@ -15,9 +15,12 @@ export function formatMessages(
     } else if (Array.isArray(msg.content)) {
       // 处理数组内容，拼接文本，忽略图片等非文本内容
       msg.content.forEach((c) => {
-        if (c.type === 'input_text' && c.text) {
+        if ((c.type === 'input_text' || c.type === 'text') && c.text) {
           newMsg.content += c.text + '\n'
-        } else if (c.type === 'input_image' && c.image_url) {
+        } else if (
+          (c.type === 'input_image' || c.type === 'image_url') &&
+          c.image_url
+        ) {
           const base64Data = c.image_url.split(',')[1] ?? ''
           if (base64Data) {
             newMsg.images?.push(base64Data)

@@ -30,7 +30,7 @@ export type TOpenAIMessage = {
   content:
     | string
     | {
-        type: 'input_text' | 'input_image'
+        type: 'text' | 'input_text' | 'input_image' | 'image_url'
         text?: string
         image_url?: string //`data:image/jpeg;base64,${base64_image}`
       }[]
