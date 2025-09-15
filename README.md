@@ -1,4 +1,4 @@
-# ollama-api
+# OpenAI to Ollama
 
 本项目是一个基于 Node.js + TypeScript 的 API 服务，封装并扩展了 Ollama 本地大模型推理能力，提供类 OpenAI 兼容接口，便于集成与二次开发。
 
