@@ -4,19 +4,29 @@
 
 ## 主要特性
 
-- 基于 Express，支持 RESTful API
+- 基于 Express
+- RESTful API
 - 兼容 OpenAI Chat/Completions/Models 等接口
-- 支持 Ollama 本地模型推理与管理
-- 支持自定义参数解析、流式响应、图片输入等
+- 支持流式响应、图片输入
 
 ## 目录结构
 
-- `app.ts`              —— 应用入口
-- `routes/`             —— 路由与 API 逻辑
-- `services/`           —— Ollama 服务封装
-- `types/`              —— 类型定义
-- `utils/`              —— 工具函数
-- `tests/`              —— 测试用例
+- `app.ts`              -- 应用入口
+- `routes/`             -- 路由与 API 逻辑
+- `services/`           -- Ollama 服务封装
+- `types/`              -- 类型定义
+- `utils/`              -- 工具函数
+- `tests/`              -- 测试用例
+
+## 前置要求
+
+在开始前，请确保本机已安装 [Ollama](https://ollama.com/) 并已启动 Ollama 服务：
+
+```sh
+ollama serve
+```
+
+否则将无法正常访问 ollama。
 
 ## 快速开始
 

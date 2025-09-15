@@ -177,8 +177,8 @@ export async function listModels(_req: Request, res: Response) {
 // 立刻关闭当前加载的所有模型
 export async function closeModel(req: Request, res: Response) {
   console.log('[ollamaService.closeModel] 请求')
-  const psList = await ollama.ps()
   try {
+    const psList = await ollama.ps()
     // 关闭所有模型
     for (const model of psList.models) {
       await ollama.chat({
