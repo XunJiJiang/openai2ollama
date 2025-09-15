@@ -1,5 +1,5 @@
 {
-  "exclude": ["apps/**/*"],
+  "exclude": ["tests/**/*"],
   "include": [
     "vite.config.*",
     "vitest.config.*",
@@ -8,7 +8,6 @@
     "playwright.config.*",
     "eslint.config.*",
     "vite/**/*",
-    "electron/**/*",
     "utils",
     "types"
   ],

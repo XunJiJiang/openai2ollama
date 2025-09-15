@@ -28,7 +28,8 @@ export default defineConfig(
       '**/node_modules/**',
       '**/build/**',
       '**/release/**',
-      '**/resources/**'
+      '**/resources/**',
+      '**/tests/**'
     ]
   },
 
