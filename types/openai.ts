@@ -32,7 +32,11 @@ export type TOpenAIMessage = {
     | {
         type: 'text' | 'input_text' | 'input_image' | 'image_url'
         text?: string
-        image_url?: string //`data:image/jpeg;base64,${base64_image}`
+        image_url?:
+          | string
+          | {
+              url: string // `http...`
+            } //`data:image/jpeg;base64,${base64_image}` | `http...`
       }[]
 }
 

@@ -22,14 +22,29 @@ export async function formatMessages(
           (c.type === 'input_image' || c.type === 'image_url') &&
           c.image_url
         ) {
-          if (c.image_url.startsWith('data:image/')) {
+          if (
+            typeof c.image_url === 'string' &&
+            c.image_url.startsWith('data:image/')
+          ) {
             const base64Data = c.image_url.split(',')[1] ?? ''
             if (base64Data) {
               newMsg.images?.push(base64Data)
             }
-          } else if (c.image_url.startsWith('http')) {
+          } else if (
+            typeof c.image_url === 'string' &&
+            c.image_url.startsWith('http')
+          ) {
             // 处理远程图片 URL，下载并转换为 base64
             const base64Data = await downloadImageAsBase64(c.image_url)
+            if (base64Data) {
+              newMsg.images?.push(base64Data)
+            }
+          } else if (
+            typeof c.image_url === 'object' &&
+            typeof c.image_url.url === 'string' &&
+            c.image_url.url.startsWith('http')
+          ) {
+            const base64Data = await downloadImageAsBase64(c.image_url.url)
             if (base64Data) {
               newMsg.images?.push(base64Data)
             }
@@ -92,9 +107,23 @@ export function formatLogMessages(
               ...(c.image_url
                 ? {
                     image_url:
-                      c.image_url.length > 30
-                        ? c.image_url.slice(0, 30) + '...'
-                        : c.image_url
+                      typeof c.image_url === 'string'
+                        ? c.image_url.startsWith('http')
+                          ? c.image_url
+                          : c.image_url.slice(0, 30) + '...'
+                        : {
+                            url:
+                              c.image_url.url &&
+                              c.image_url.url.startsWith('http')
+                                ? c.image_url.url
+                                : c.image_url.url
+                                  ? c.image_url.url.slice(0, 30) + '...'
+                                  : (console.warn(
+                                      '[formatMessages] 未知的 image_url 格式:',
+                                      c.image_url
+                                    ),
+                                    '<undefined>')
+                          }
                   }
                 : {})
             }
